@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EHealth.ManageItemLists.Domain\EHealth.ManageItemLists.Domain.csproj" />
+    <ProjectReference Include="..\EHealth.ManageItemLists.Infrastructure\EHealth.ManageItemLists.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Categories\Commands\" />
+    <Folder Include="Categories\DTOs\" />
+    <Folder Include="Categories\Handlers\" />
+    <Folder Include="Categories\Queries\" />
+    <Folder Include="Facility\UHIA\Queries\Validations\" />
+    <Folder Include="Lookups\LocalUnitOfMeasures\Commands\" />
+    <Folder Include="Lookups\LocalUnitOfMeasures\Queries\" />
+    <Folder Include="Lookups\RegistrationTypes\Queries\" />
+    <Folder Include="SubCategories\Commands\" />
+    <Folder Include="SubCategories\DTOs\" />
+    <Folder Include="SubCategories\Handlers\" />
+    <Folder Include="SubCategories\Queries\" />
+    <Folder Include="Lookups\Subtype\Commands\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="ClosedXML" Version="0.102.1" />
+    <PackageReference Include="EPPlus" Version="7.0.0" />
+    <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="NPOI" Version="2.6.2" />
+  </ItemGroup>
+
+</Project>
