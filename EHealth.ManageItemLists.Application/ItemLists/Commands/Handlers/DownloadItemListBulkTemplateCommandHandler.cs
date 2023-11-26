@@ -1,9 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2016.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using EHealth.ManageItemLists.Application.DoctorFees.UHIA.Commands;
-using EHealth.ManageItemLists.Application.DoctorFees.UHIA.DTOs;
-using EHealth.ManageItemLists.Application.DoctorFees.UHIA.Queries;
-using EHealth.ManageItemLists.Application.Excel;
+﻿using EHealth.ManageItemLists.Application.Excel;
 using EHealth.ManageItemLists.Application.ItemLists.DTOs;
 using EHealth.ManageItemLists.Application.ItemLists.Queries;
 using EHealth.ManageItemLists.Domain.Shared.BulkUpload.Headers;
@@ -17,9 +12,9 @@ namespace EHealth.ManageItemLists.Application.ItemLists.Commands.Handlers
 {
     public class DownloadItemListBulkTemplateCommandHandler : IRequestHandler<DownloadItemListBulkTemplateCommand, byte[]>
     {
-        private readonly IItemListRepository  _itemListRepository ;
+        private readonly IItemListRepository _itemListRepository;
         private readonly IMediator _mediator;
-        public DownloadItemListBulkTemplateCommandHandler(IItemListRepository itemListRepository,IMediator mediator)
+        public DownloadItemListBulkTemplateCommandHandler(IItemListRepository itemListRepository, IMediator mediator)
         {
             _itemListRepository = itemListRepository;
             _mediator = mediator;
@@ -46,7 +41,7 @@ namespace EHealth.ManageItemLists.Application.ItemLists.Commands.Handlers
                 Data = (List<ItemListDto>)(res?.Data),
                 Columns = ItemListTemplateHeader.Headers
             };
-            var workbook = await exportClass.GenerateTemplate(request.ItemListSubtypeId??0);
+            var workbook = await exportClass.GenerateTemplate(request.ItemListSubtypeId ?? 0);
             var basicSheet = (XSSFSheet)workbook.GetSheetAt(0);
 
 
@@ -58,22 +53,23 @@ namespace EHealth.ManageItemLists.Application.ItemLists.Commands.Handlers
                 var row = basicSheet.CreateRow(i + 1);
                 var cell0 = row.CreateCell(ItemListTemplateHeader.Headers.FirstOrDefault(c => c.Key == "Code").Index);
                 cell0.SetCellValue(res.Data[i].Code);
-                var style = workbook.CreateCellStyle();
-                style.IsLocked=true;
-                cell0.CellStyle=style;
+                
 
                 var cell1 = row.CreateCell(ItemListTemplateHeader.Headers.FirstOrDefault(c => c.Key == "NameAr").Index);
                 cell1.SetCellValue(res.Data[i].NameAr);
+        
                 var cell2 = row.CreateCell(ItemListTemplateHeader.Headers.FirstOrDefault(c => c.Key == "NameEN").Index);
                 cell2.SetCellValue(res.Data[i].NameEN);
+              
                 var cell3 = row.CreateCell(ItemListTemplateHeader.Headers.FirstOrDefault(c => c.Key == "ItemType").Index);
                 cell3.SetCellValue(res.Data[i]?.itemListType?.NameEN);
+        
                 var cell4 = row.CreateCell(ItemListTemplateHeader.Headers.FirstOrDefault(c => c.Key == "ItemListSubtype").Index);
                 cell4.SetCellValue(res.Data[i]?.itemListSubtype?.NameEN);
-       
+             
                 var cell5 = row.CreateCell(ItemListTemplateHeader.Headers.FirstOrDefault(c => c.Key == "ItemListSubtype").Index + 1);
                 cell5.SetCellValue(res.Data[i].Id.ToString());
-       
+
             }
             //hide id and item list id columns
             basicSheet.SetColumnHidden(ItemListTemplateHeader.Headers.FirstOrDefault(c => c.Key == "ItemListSubtype").Index + 1, true);
@@ -85,7 +81,7 @@ namespace EHealth.ManageItemLists.Application.ItemLists.Commands.Handlers
             {
                 basicSheet.AutoSizeColumn(i);
             }
-            basicSheet.ProtectSheet("");
+            //basicSheet.ProtectSheet("");
             workbook.Write(output);
             return output.ToArray();
         }
@@ -100,7 +96,7 @@ namespace EHealth.ManageItemLists.Application.ItemLists.Commands.Handlers
             EHealthCodeLengthValidation.ShowErrorBox = true;
             EHealthCodeLengthValidation.CreateErrorBox("", "Please Insert Code data from 1 to 100 characters");
             EHealthCodeLengthValidation.EmptyCellAllowed = true;
-            
+
             basicSheet.AddValidationData(EHealthCodeLengthValidation);
             #endregion
 

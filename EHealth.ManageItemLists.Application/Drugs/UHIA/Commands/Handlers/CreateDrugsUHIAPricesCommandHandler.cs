@@ -1,6 +1,7 @@
 ﻿using EHealth.ManageItemLists.Application.Drugs.UHIA.DTOs;
 using EHealth.ManageItemLists.Application.Services.ServicesUHIA.Commands;
 using EHealth.ManageItemLists.DataAccess.Migrations;
+using EHealth.ManageItemLists.Domain.DoctorFees.UHIA;
 using EHealth.ManageItemLists.Domain.Drugs.DrugsUHIA;
 using EHealth.ManageItemLists.Domain.Services.ServicesUHIA;
 using EHealth.ManageItemLists.Domain.Shared.Identity;
@@ -34,6 +35,7 @@ namespace EHealth.ManageItemLists.Application.Drugs.UHIA.Commands.Handlers
             //validate model 
             _validationEngine.Validate(request);
             var drugUHIA = await DrugUHIA.Get(request.Id, _drugsUHIARepository);
+            await DrugUHIA.IsItemListBusy(_drugsUHIARepository, drugUHIA.ItemListId);
             var drugPrices = request.ItemListPrices.Select(p => p.ToDrugPrice(_identityProvider.GetUserName(),_identityProvider.GetTenantId())).ToList();
             await drugUHIA.AddDrugPrices(_drugsUHIARepository, _validationEngine, drugPrices);
             return true;

@@ -39,7 +39,7 @@ namespace EHealth.ManageItemLists.Application.Drugs.UHIA.Commands.Handlers
             _validationEngine.Validate(request);
 
             var drugUHIA = await DrugUHIA.Get(request.Id, _drugsUHIARepository);
-
+            await DrugUHIA.IsItemListBusy(_drugsUHIARepository, drugUHIA.ItemListId);
             //get edited items
             var editedItemsIds = request.drugPrices.Where(p => p.Id != 0).Select(p => p.Id);
             //get deleted items

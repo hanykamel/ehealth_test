@@ -1,6 +1,7 @@
 ﻿using EHealth.ManageItemLists.DataAccess;
 using EHealth.ManageItemLists.Domain.ConsumablesAndDevices;
 using EHealth.ManageItemLists.Domain.ItemLists;
+using EHealth.ManageItemLists.Domain.Shared.Exceptions;
 using EHealth.ManageItemLists.Domain.Shared.Pagination;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -147,6 +148,13 @@ namespace EHealth.ManageItemLists.Infrastructure.Repositories
             }
             return false;
         }
+        public async Task<bool> IsListBusy(int Id)
+        {
+            var res = await _eHealthDbContext.ItemLists.Where(x => x.Id == Id).FirstOrDefaultAsync();
+            if (res != null)
+                return res.IsBusy;
 
+            throw new DataNotValidException();
+        }
     }
 }

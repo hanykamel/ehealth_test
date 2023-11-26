@@ -16,6 +16,7 @@ using System.Data;
 using System.Globalization;
 using System.Text;
 using EHealth.ManageItemLists.Application.DoctorFees.UHIA.Commands;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EHealth.ManageItemLists.Presentation.Controllers
 {
@@ -32,7 +33,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             _drugsUHIARepository = drugsUHIARepository;
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_drugs_uhia_add")]
         [HttpPost("BasicData/Create")]
         [ProducesResponseType(typeof(Guid), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -43,7 +44,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(id);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_drugs_uhia_add")]
         [HttpPost("Prices/Create")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -53,7 +54,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(res);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_drugs_uhia_update")]
         [HttpPut("BasicData/Update")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -64,7 +65,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(res);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_drugs_uhia_update")]
         [HttpPut("Prices/Update")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -74,7 +75,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(res);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_drugs_uhia_delete")]
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -82,14 +83,16 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
         {
             return Ok(await _mediator.Send(new DeleteDrugsUHIACommand { Id = id }));
         }
-        //[Authorize]
+
+        [Authorize(Roles = "itemslist_drugs_uhia_view")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<DrugsUHIADto>), 200)]
         public async Task<ActionResult<PagedResponse<DrugsUHIADto>>> Search([FromQuery] DrugUHIASearchQuery request)
         {
             return Ok(await _mediator.Send(request));
         }
-        //[Authorize]
+
+        [Authorize(Roles = "itemslist_drugs_uhia_details,itemslist_drugs_uhia_update")]
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(DrugUHIAGetByIdDto), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -98,6 +101,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(await _mediator.Send(new DrugUHIAGetByIdQuery { Id = id }));
         }
 
+        [Authorize(Roles = "itemslist_drugs_uhia_export")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<DrugsUHIADto>), 200)]
         public async Task<ActionResult<PagedResponse<DrugsUHIADto>>> CreateTemplateDrugsUHIA([FromQuery] CreateTemplateDrugsUHIASearchQuery request)
@@ -117,12 +121,16 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
                 return GenerateCSV(fileName, res);
             }
         }
+
+        [Authorize(Roles = "itemslist_drugs_uhia_bulkupload")]
         [HttpGet("[Action]")]
         public async Task<IActionResult> DownloadBulkTemplate([FromQuery] DownloadDrugsUhiaBulkTemplateCommand request)
         {
             var result = await _mediator.Send(request);
             return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Drugs - UHIA.xlsx");
         }
+
+        [Authorize(Roles = "itemslist_drugs_uhia_bulkupload")]
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]

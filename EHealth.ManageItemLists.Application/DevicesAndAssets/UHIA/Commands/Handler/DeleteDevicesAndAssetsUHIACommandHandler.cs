@@ -1,9 +1,11 @@
 ﻿using EHealth.ManageItemLists.Application.Consumables_Devices.ConsumablesAndDevicesUHIA;
+using EHealth.ManageItemLists.DataAccess.Migrations;
 using EHealth.ManageItemLists.Domain.DevicesAndAssets.UHIA;
 using EHealth.ManageItemLists.Domain.Services.ServicesUHIA;
 using EHealth.ManageItemLists.Domain.Shared.Exceptions;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Domain.Shared.Validation;
+using EHealth.ManageItemLists.Infrastructure.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,7 @@ namespace EHealth.ManageItemLists.Application.DevicesAndAssets.UHIA.Commands.Han
         public async Task<bool> Handle(DeleteDevicesAndAssetsUHIACommand request, CancellationToken cancellationToken)
         {
             var DevicesAndAssetUHIA = await DevicesAndAssetsUHIA.Get(request.Id, _devicesAndAssetsUHIARepository);
+            await DevicesAndAssetsUHIA.IsItemListBusy(_devicesAndAssetsUHIARepository, DevicesAndAssetUHIA.ItemListId);
             if (DevicesAndAssetUHIA is not null)
             {
                 DevicesAndAssetUHIA.IsDeleted = true;

@@ -12,8 +12,8 @@ namespace EHealth.ManageItemLists.Application.PackageHeaders.DTOs
         public string UHIACode { get; set; }
         public string NameEn { get; set; }
         public string? NameAr { get; set; }
-        public int PackageTypeId { get; set; }
-        public int PackageSubTypeId { get; set; }
+        public int PackageTypeId { get; private set; }
+        public int PackageSubTypeId { get; private set; }
         public int? PackageComplexityClassificationId { get; set; }
         public int GlobelPackageTypeId { get; set; }
         public int PackageSpecialtyId { get; set; }

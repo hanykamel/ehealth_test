@@ -17,6 +17,9 @@
     <Folder Include="Categories\Handlers\" />
     <Folder Include="Categories\Queries\" />
     <Folder Include="Facility\UHIA\Queries\Validations\" />
+    <Folder Include="FeesOfResourcesPerUnitPackageComponent\Facility\Queries\" />
+    <Folder Include="InvestmentCostPackage\InvestmentCostPackageComponent\Commnads\Handlers\" />
+    <Folder Include="FeesOfResourcesPerUnitPackageComponent\Recources\Queries\" />
     <Folder Include="Lookups\LocalUnitOfMeasures\Commands\" />
     <Folder Include="Lookups\LocalUnitOfMeasures\Queries\" />
     <Folder Include="Lookups\RegistrationTypes\Queries\" />

@@ -10,6 +10,7 @@ using EHealth.ManageItemLists.Domain.Shared.Pagination;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Presentation.ExceptionHandlers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NPOI.HPSF;
 using System.Data;
@@ -31,7 +32,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             _serviceUHIARepository = serviceUHIARepository;
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_services_uhia_add")]
         [HttpPost("BasicData/Create")]
         [ProducesResponseType(typeof(Guid), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -42,7 +43,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(id);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_services_uhia_add")]
         [HttpPost("Prices/Create")]
         [ProducesResponseType(typeof(Guid), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -52,7 +53,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(serviceUHIAId);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_services_uhia_update")]
         [HttpPut("BasicData/Update")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -63,7 +64,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(res);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_services_uhia_update")]
         [HttpPut("Prices/Update")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -73,13 +74,15 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(res);
         }
 
+        [Authorize(Roles = "itemslist_services_uhia_view")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<ServiceUHIADto>), 200)]
         public async Task<ActionResult<PagedResponse<ServiceUHIADto>>> Search([FromQuery] ServiceUHIASearchQuery request)
         {
             return Ok(await _mediator.Send(request));
         }
-        ////[Authorize]
+
+        [Authorize(Roles = "itemslist_services_uhia_details,itemslist_services_uhia_update")]
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(ServiceUHIADto), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -87,6 +90,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
         {
             return Ok(await _mediator.Send(new ServiceUHIAGetByIdQuery { Id = id }));
         }
+
+        [Authorize(Roles = "itemslist_services_uhia_delete")]
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -95,7 +100,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(await _mediator.Send(new DeleteServicesUHIACommand { Id = id }));
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_services_uhia_bulkupload")]
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -112,6 +117,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(true);
         }
 
+        [Authorize(Roles = "itemslist_services_uhia_export")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<ServiceUHIADto>), 200)]
         public async Task<ActionResult<PagedResponse<ServiceUHIADto>>> CreateTemplateServiceUHIA([FromQuery] CreateTemplateServiceUHIASearchQuery request)
@@ -134,6 +140,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
 
         }
 
+        [Authorize(Roles = "itemslist_services_uhia_bulkupload")]
         [HttpGet("[Action]")]
         public async Task<IActionResult> DownloadBulkTemplate([FromQuery] DownloadBulkTemplateCommand request)
         {

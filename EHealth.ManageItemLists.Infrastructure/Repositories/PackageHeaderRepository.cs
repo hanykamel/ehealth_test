@@ -25,9 +25,10 @@ namespace EHealth.ManageItemLists.Infrastructure.Repositories
             return input.Id;
         }
 
-        public Task<bool> Delete(PackageHeader input)
+        public async Task<bool> Delete(PackageHeader input)
         {
-            throw new NotImplementedException();
+            _eHealthDbContext.PackageHeaders.Update(input);
+            return await _eHealthDbContext.SaveChangesAsync() > 0;
         }
 
         public async Task<PackageHeader?> Get(Guid id)
@@ -46,15 +47,14 @@ namespace EHealth.ManageItemLists.Infrastructure.Repositories
 
         public async Task<PagedResponse<PackageHeader>> Search(Expression<Func<PackageHeader, bool>> predicate, int pageNumber, int pageSize, bool enablePagination, string? orderBy, bool? ascending)
         {
-            var query = _eHealthDbContext.PackageHeaders.Where(predicate).Include(x => x.PackageComplexityClassification)
+            var query = _eHealthDbContext.PackageHeaders.Where(predicate)
                .Include(x => x.PackageSpecialty)
                .Include(x => x.GlobelPackageType)
                .Include(x => x.PackageComplexityClassification)
-               .Include(x => x.PackageSubType)
-               .ThenInclude(x => x.PackageType).AsQueryable();
+               .Include(x => x.PackageSubType).ThenInclude(t => t.PackageType).AsQueryable();
             if (!string.IsNullOrEmpty(orderBy))
             {
-                switch (orderBy.ToLower())
+                switch (orderBy.Replace(" ","").ToLower())
                 {
                     case "ehealthcode":
                         if (ascending == false)
@@ -68,49 +68,78 @@ namespace EHealth.ManageItemLists.Infrastructure.Repositories
                         else
                             query = query.OrderBy(e => e.UHIACode);
                         break;
-                    case "namear":
+                    case "packagenamear":
                         if (ascending == false)
                             query = query.OrderByDescending(e => e.NameAr);
                         else
                             query = query.OrderBy(e => e.NameAr);
                         break;
-                    case "nameen":
+                    case "packagenameen":
                         if (ascending == false)
                             query = query.OrderByDescending(e => e.NameEn);
                         else
                             query = query.OrderBy(e => e.NameEn);
                         break;
 
-                    case "packagetypeid":
+                    case "packagetypear":
                         if (ascending == false)
-                            query = query.OrderByDescending(e => e.PackageTypeId);
+                            query = query.OrderByDescending(e => e.PackageType.NameAr);
                         else
-                            query = query.OrderBy(e => e.PackageTypeId);
+                            query = query.OrderBy(e => e.PackageType.NameAr);
                         break;
-                    case "packagesubtypeid":
+                    case "packagetypeen":
                         if (ascending == false)
-                            query = query.OrderByDescending(e => e.PackageSubTypeId);
+                            query = query.OrderByDescending(e => e.PackageType.NameEN);
                         else
-                            query = query.OrderBy(e => e.PackageSubTypeId);
+                            query = query.OrderBy(e => e.PackageType.NameEN);
                         break;
-
-                    case "packagecomplexityclassificationid":
+                    case "packagesubtypear":
                         if (ascending == false)
-                            query = query.OrderByDescending(e => e.PackageComplexityClassificationId);
+                            query = query.OrderByDescending(e => e.PackageSubType.NameAr);
                         else
-                            query = query.OrderBy(e => e.PackageComplexityClassificationId);
+                            query = query.OrderBy(e => e.PackageSubType.NameAr);
                         break;
-                    case "globalpackagetypeid":
+                    case "packagesubtypeen":
                         if (ascending == false)
-                            query = query.OrderByDescending(e => e.GlobelPackageTypeId);
+                            query = query.OrderByDescending(e => e.PackageSubType.NameEN);
                         else
-                            query = query.OrderBy(e => e.GlobelPackageTypeId);
+                            query = query.OrderBy(e => e.PackageSubType.NameEN);
                         break;
-                    case "packagespecialityid":
+                    case "packagecomplexityclassificationar":
                         if (ascending == false)
-                            query = query.OrderByDescending(e => e.PackageSpecialtyId);
+                            query = query.OrderByDescending(e => e.PackageComplexityClassification.DefinitionAr);
                         else
-                            query = query.OrderBy(e => e.PackageSpecialtyId);
+                            query = query.OrderBy(e => e.PackageComplexityClassification.DefinitionAr);
+                        break;
+                    case "packagecomplexityclassificationen":
+                        if (ascending == false)
+                            query = query.OrderByDescending(e => e.PackageComplexityClassification.DefinitionEn);
+                        else
+                            query = query.OrderBy(e => e.PackageComplexityClassification.DefinitionEn);
+                        break;
+                    case "globalpackagetypear":
+                        if (ascending == false)
+                            query = query.OrderByDescending(e => e.GlobelPackageType.DefinitionAr);
+                        else
+                            query = query.OrderBy(e => e.GlobelPackageType.DefinitionAr);
+                        break;
+                    case "globalpackagetypeen":
+                        if (ascending == false)
+                            query = query.OrderByDescending(e => e.GlobelPackageType.DefinitionEn);
+                        else
+                            query = query.OrderBy(e => e.GlobelPackageType.DefinitionEn);
+                        break;
+                    case "packagespecialityar":
+                        if (ascending == false)
+                            query = query.OrderByDescending(e => e.PackageSpecialty.DefinitionAr);
+                        else
+                            query = query.OrderBy(e => e.PackageSpecialty.DefinitionAr);
+                        break;
+                    case "packagespecialityen":
+                        if (ascending == false)
+                            query = query.OrderByDescending(e => e.PackageSpecialty.DefinitionEn);
+                        else
+                            query = query.OrderBy(e => e.PackageSpecialty.DefinitionEn);
                         break;
                     case "packageduration":
                         if (ascending == false)

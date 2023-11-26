@@ -1,17 +1,9 @@
-﻿using EHealth.ManageItemLists.Application.Resource.UHIA.Commands;
-using EHealth.ManageItemLists.Domain.DoctorFees.UHIA;
-using EHealth.ManageItemLists.Domain.Resource.UHIA;
+﻿using EHealth.ManageItemLists.Domain.DoctorFees.UHIA;
 using EHealth.ManageItemLists.Domain.Shared.Exceptions;
 using EHealth.ManageItemLists.Domain.Shared.Identity;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Domain.Shared.Validation;
-using EHealth.ManageItemLists.Infrastructure.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EHealth.ManageItemLists.Application.DoctorFees.UHIA.Commands.Handler
 {
@@ -30,6 +22,7 @@ namespace EHealth.ManageItemLists.Application.DoctorFees.UHIA.Commands.Handler
         public async Task<bool> Handle(DeleteDoctorFeesUHIACommand request, CancellationToken cancellationToken)
         {
             var doctorFeesUHIA = await DoctorFeesUHIA.Get(request.Id, _doctorFeesUHIARepository);
+            await DoctorFeesUHIA.IsItemListBusy(_doctorFeesUHIARepository, doctorFeesUHIA.ItemListId);
             if (doctorFeesUHIA is not null)
             {
                 doctorFeesUHIA.SoftDelete(_identityProvider.GetUserName());

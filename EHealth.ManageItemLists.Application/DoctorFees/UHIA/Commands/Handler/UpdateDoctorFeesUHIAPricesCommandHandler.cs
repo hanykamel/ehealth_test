@@ -24,7 +24,7 @@ namespace EHealth.ManageItemLists.Application.DoctorFees.UHIA.Commands.Handler
             _validationEngine.Validate(request);
 
             var serviceUHIA = await DoctorFeesUHIA.Get(request.DoctorFeesUHIAId, _doctorFeesUHIARepository);
-
+            await DoctorFeesUHIA.IsItemListBusy(_doctorFeesUHIARepository, serviceUHIA.ItemListId);
             // prepare model to update and soft delete Item Prices
             for (int i = 0; i < serviceUHIA.ItemListPrices.Count; i++)
             {

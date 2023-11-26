@@ -26,8 +26,8 @@ namespace EHealth.ManageItemLists.Application.PackageHeaders.Commands
             UHIACode = request.UHIACode;
             NameEn = request.NameEn;
             NameAr = request.NameAr;
-            PackageTypeId = request.PackageTypeId;
-            PackageSubTypeId = request.PackageSubTypeId;
+            //PackageTypeId = request.PackageTypeId;
+            //PackageSubTypeId = request.PackageSubTypeId;
             PackageComplexityClassificationId = request.PackageComplexityClassificationId;
             GlobelPackageTypeId = request.GlobelPackageTypeId;
             PackageSpecialtyId = request.PackageSpecialtyId;

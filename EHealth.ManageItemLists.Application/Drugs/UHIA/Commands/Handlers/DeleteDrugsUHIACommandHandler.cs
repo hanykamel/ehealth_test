@@ -31,6 +31,7 @@ namespace EHealth.ManageItemLists.Application.Drugs.UHIA.Commands.Handlers
         public async Task<bool> Handle(DeleteDrugsUHIACommand request, CancellationToken cancellationToken)
         {
             var drugsUHIA = await DrugUHIA.Get(request.Id, _drugsUHIARepository);
+            await DrugUHIA.IsItemListBusy(_drugsUHIARepository, drugsUHIA.ItemListId);
             if (drugsUHIA is not null)
             {
                 drugsUHIA.SoftDelete(_identityProvider.GetUserName());

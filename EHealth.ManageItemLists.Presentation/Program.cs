@@ -6,6 +6,7 @@ using EHealth.ManageItemLists.Domain.Shared.Validation;
 using EHealth.ManageItemLists.Infrastructure.Repositories;
 using EHealth.ManageItemLists.Infrastructure.Repositories.Lookups;
 using EHealth.ManageItemLists.Presentation.Authentication;
+using EHealth.ManageItemLists.Presentation.CustomMiddlewares;
 using EHealth.ManageItemLists.Presentation.ExceptionHandlers;
 using EHealth.ManageItemLists.Presentation.Identity;
 using EHealth.ManageItemLists.Presentation.Keycloack;
@@ -28,6 +29,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ExceptionHandlerMiddleware>();
+builder.Services.AddScoped<UserPrivilegesMiddleware>();
 
 //Fluient Validation
 builder.Services.AddScoped<IValidationEngine, ValidationEngine>();
@@ -118,6 +120,7 @@ app.UseCors(x => x
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseMiddleware<UserPrivilegesMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

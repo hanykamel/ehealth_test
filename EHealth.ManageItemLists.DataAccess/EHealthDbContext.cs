@@ -14,6 +14,7 @@ using EHealth.ManageItemLists.Domain.ItemListSubtypes;
 using EHealth.ManageItemLists.Domain.ItemListTypes;
 using EHealth.ManageItemLists.Domain.LocalSpecialtyDepartments;
 using EHealth.ManageItemLists.Domain.LocalTypeOfMeasure;
+using EHealth.ManageItemLists.Domain.Locations;
 using EHealth.ManageItemLists.Domain.PackageComplexityClassifications;
 using EHealth.ManageItemLists.Domain.Packages.FeesOfResourcesPerUnitPackage.FeesOfResourcesPerUnitPackageComponents;
 using EHealth.ManageItemLists.Domain.Packages.FeesOfResourcesPerUnitPackage.FeesOfResourcesPerUnitPackageResources;
@@ -21,7 +22,11 @@ using EHealth.ManageItemLists.Domain.Packages.FeesOfResourcesPerUnitPackage.Fees
 using EHealth.ManageItemLists.Domain.Packages.InvestmentCostPackage.InvestmentCostDepreciationsAndMaintenances;
 using EHealth.ManageItemLists.Domain.Packages.InvestmentCostPackage.InvestmentCostPackagAssets;
 using EHealth.ManageItemLists.Domain.Packages.InvestmentCostPackage.InvestmentCostPackageComponents;
+using EHealth.ManageItemLists.Domain.Packages.InvestmentCostPackage.InvestmentCostPackageSummaries;
 using EHealth.ManageItemLists.Domain.Packages.PackageHeaders;
+using EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageComponents;
+using EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageConsumablesAndDevices;
+using EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageDrugs;
 using EHealth.ManageItemLists.Domain.PackageSpecialties;
 using EHealth.ManageItemLists.Domain.PackageSubTypes;
 using EHealth.ManageItemLists.Domain.PackageTypes;
@@ -81,6 +86,11 @@ namespace EHealth.ManageItemLists.DataAccess
         public DbSet<FeesOfResourcesPerUnitPackageResource> FeesOfResourcesPerUnitPackageResources => Set<FeesOfResourcesPerUnitPackageResource>();
         public DbSet<FeesOfResourcesPerUnitPackageSummary> FeesOfResourcesPerUnitPackageSummaries => Set<FeesOfResourcesPerUnitPackageSummary>();
         public DbSet<FeesOfResourcesPerUnitPackageComponent> FeesOfResourcesPerUnitPackageComponents => Set<FeesOfResourcesPerUnitPackageComponent>();
+        public DbSet<Location> Locations => Set<Location>();
+        public DbSet<SharedItemsPackageDrug> SharedItemsPackageDrugs => Set<SharedItemsPackageDrug>();
+        public DbSet<SharedItemsPackageConsumableAndDevice> SharedItemsPackageConsumableAndDevices => Set<SharedItemsPackageConsumableAndDevice>();
+        public DbSet<SharedItemsPackageComponent> SharedItemsPackageComponents => Set<SharedItemsPackageComponent>();
+        public DbSet<InvestmentCostPackageSummary> InvestmentCostPackageSummaries => Set<InvestmentCostPackageSummary>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);

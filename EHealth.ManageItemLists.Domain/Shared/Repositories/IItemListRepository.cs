@@ -11,6 +11,6 @@ namespace EHealth.ManageItemLists.Domain.Shared.Repositories
         Task<bool> Delete(ItemList input);
         Task<ItemList?> Get(int id);
         Task<PagedResponse<ItemList>> Search(Expression<Func<ItemList, bool>> predicate, int pageNumber, int pageSize, string? orderBy, bool? ascending, bool enablePagination);
-       
+        Task<bool> IsListBusy(int Id);
     }
 }

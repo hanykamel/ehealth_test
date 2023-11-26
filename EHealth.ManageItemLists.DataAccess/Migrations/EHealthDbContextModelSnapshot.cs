@@ -1094,6 +1094,70 @@ namespace EHealth.ManageItemLists.DataAccess.Migrations
                     b.ToTable("UnitOfMeasures", (string)null);
                 });
 
+            modelBuilder.Entity("EHealth.ManageItemLists.Domain.Locations.Location", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DefinitionAr")
+                        .HasMaxLength(1500)
+                        .HasColumnType("character varying(1500)");
+
+                    b.Property<string>("DefinitionEn")
+                        .HasMaxLength(1500)
+                        .HasColumnType("character varying(1500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("IsDeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LocationAr")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("LocationEn")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Locations", (string)null);
+                });
+
             modelBuilder.Entity("EHealth.ManageItemLists.Domain.PackageComplexityClassifications.PackageComplexityClassification", b =>
                 {
                     b.Property<int>("Id")
@@ -1170,7 +1234,7 @@ namespace EHealth.ManageItemLists.DataAccess.Migrations
                     b.Property<DateTimeOffset>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("FacilityUHIAId")
+                    b.Property<Guid?>("FacilityUHIAId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("FeesOfResourcesPerUnitPackageSummaryId")
@@ -1518,7 +1582,7 @@ namespace EHealth.ManageItemLists.DataAccess.Migrations
                     b.Property<DateTimeOffset>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("FacilityUHIAId")
+                    b.Property<Guid?>("FacilityUHIAId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("InvestmentCostDepreciationAndMaintenanceId")
@@ -1538,13 +1602,15 @@ namespace EHealth.ManageItemLists.DataAccess.Migrations
                     b.Property<DateTimeOffset?>("ModifiedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("NumberOfSessionsPerUnitPerFacility")
+                    b.Property<int?>("NumberOfSessionsPerUnitPerFacility")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<Guid>("PackageHeaderId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("QuantityOfUnitsPerTheFacility")
+                    b.Property<int?>("QuantityOfUnitsPerTheFacility")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<string>("TenantId")
@@ -1558,6 +1624,61 @@ namespace EHealth.ManageItemLists.DataAccess.Migrations
                     b.HasIndex("PackageHeaderId");
 
                     b.ToTable("InvestmentCostPackageComponents", (string)null);
+                });
+
+            modelBuilder.Entity("EHealth.ManageItemLists.Domain.Packages.InvestmentCostPackage.InvestmentCostPackageSummaries.InvestmentCostPackageSummary", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("InvestmentCostPackageComponentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("IsDeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("NumberOfItems")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double?>("TotalCostOfItems")
+                        .HasColumnType("double precision");
+
+                    b.Property<int?>("TotalNumberOfQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<double?>("YearlyDepreciationCostForTheAddedAsset")
+                        .HasColumnType("double precision");
+
+                    b.Property<double?>("YearlyMaintenanceCostForTheAddedAsset")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvestmentCostPackageComponentId");
+
+                    b.ToTable("InvestmentCostPackageSummaries", (string)null);
                 });
 
             modelBuilder.Entity("EHealth.ManageItemLists.Domain.Packages.PackageHeaders.PackageHeader", b =>
@@ -1649,6 +1770,170 @@ namespace EHealth.ManageItemLists.DataAccess.Migrations
                     b.HasIndex("PackageTypeId");
 
                     b.ToTable("PackageHeaders", (string)null);
+                });
+
+            modelBuilder.Entity("EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageComponents.SharedItemsPackageComponent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("IsDeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("PackageHeaderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PackageHeaderId");
+
+                    b.ToTable("SharedItemsPackageComponents", (string)null);
+                });
+
+            modelBuilder.Entity("EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageConsumablesAndDevices.SharedItemsPackageConsumableAndDevice", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<double?>("ConsumablePerCase")
+                        .HasColumnType("double precision");
+
+                    b.Property<Guid>("ConsumablesAndDevicesUHIAId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("IsDeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("NumberOfCasesInTheUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("SharedItemsPackageComponentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double?>("TotalCost")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConsumablesAndDevicesUHIAId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("SharedItemsPackageComponentId");
+
+                    b.ToTable("SharedItemsPackageConsumablesAndDevices", (string)null);
+                });
+
+            modelBuilder.Entity("EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageDrugs.SharedItemsPackageDrug", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double?>("DrugPerCase")
+                        .HasColumnType("double precision");
+
+                    b.Property<Guid>("DrugUHIAId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("IsDeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("NumberOfCasesInTheUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("SharedItemsPackageComponentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double?>("TotalCost")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DrugUHIAId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("SharedItemsPackageComponentId");
+
+                    b.ToTable("SharedItemsPackageDrugs", (string)null);
                 });
 
             modelBuilder.Entity("EHealth.ManageItemLists.Domain.PackageSpecialties.PackageSpecialty", b =>
@@ -2788,9 +3073,7 @@ namespace EHealth.ManageItemLists.DataAccess.Migrations
                 {
                     b.HasOne("EHealth.ManageItemLists.Domain.Facility.UHIA.FacilityUHIA", "FacilityUHIA")
                         .WithMany()
-                        .HasForeignKey("FacilityUHIAId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FacilityUHIAId");
 
                     b.HasOne("EHealth.ManageItemLists.Domain.Packages.PackageHeaders.PackageHeader", "PackageHeader")
                         .WithMany()
@@ -2867,9 +3150,7 @@ namespace EHealth.ManageItemLists.DataAccess.Migrations
                 {
                     b.HasOne("EHealth.ManageItemLists.Domain.Facility.UHIA.FacilityUHIA", "FacilityUHIA")
                         .WithMany()
-                        .HasForeignKey("FacilityUHIAId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FacilityUHIAId");
 
                     b.HasOne("EHealth.ManageItemLists.Domain.Packages.PackageHeaders.PackageHeader", "PackageHeader")
                         .WithMany()
@@ -2880,6 +3161,17 @@ namespace EHealth.ManageItemLists.DataAccess.Migrations
                     b.Navigation("FacilityUHIA");
 
                     b.Navigation("PackageHeader");
+                });
+
+            modelBuilder.Entity("EHealth.ManageItemLists.Domain.Packages.InvestmentCostPackage.InvestmentCostPackageSummaries.InvestmentCostPackageSummary", b =>
+                {
+                    b.HasOne("EHealth.ManageItemLists.Domain.Packages.InvestmentCostPackage.InvestmentCostPackageComponents.InvestmentCostPackageComponent", "InvestmentCostPackageComponent")
+                        .WithMany()
+                        .HasForeignKey("InvestmentCostPackageComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InvestmentCostPackageComponent");
                 });
 
             modelBuilder.Entity("EHealth.ManageItemLists.Domain.Packages.PackageHeaders.PackageHeader", b =>
@@ -2921,6 +3213,67 @@ namespace EHealth.ManageItemLists.DataAccess.Migrations
                     b.Navigation("PackageSubType");
 
                     b.Navigation("PackageType");
+                });
+
+            modelBuilder.Entity("EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageComponents.SharedItemsPackageComponent", b =>
+                {
+                    b.HasOne("EHealth.ManageItemLists.Domain.Packages.PackageHeaders.PackageHeader", "PackageHeader")
+                        .WithMany()
+                        .HasForeignKey("PackageHeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PackageHeader");
+                });
+
+            modelBuilder.Entity("EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageConsumablesAndDevices.SharedItemsPackageConsumableAndDevice", b =>
+                {
+                    b.HasOne("EHealth.ManageItemLists.Domain.ConsumablesAndDevices.ConsumablesAndDevicesUHIA", "ConsumablesAndDevicesUHIA")
+                        .WithMany()
+                        .HasForeignKey("ConsumablesAndDevicesUHIAId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EHealth.ManageItemLists.Domain.Locations.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageComponents.SharedItemsPackageComponent", "SharedItemsPackageComponent")
+                        .WithMany("SharedItemsPackageConsumablesAndDevices")
+                        .HasForeignKey("SharedItemsPackageComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ConsumablesAndDevicesUHIA");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("SharedItemsPackageComponent");
+                });
+
+            modelBuilder.Entity("EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageDrugs.SharedItemsPackageDrug", b =>
+                {
+                    b.HasOne("EHealth.ManageItemLists.Domain.Drugs.DrugsUHIA.DrugUHIA", "DrugUHIA")
+                        .WithMany()
+                        .HasForeignKey("DrugUHIAId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EHealth.ManageItemLists.Domain.Locations.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageComponents.SharedItemsPackageComponent", "SharedItemsPackageComponent")
+                        .WithMany("SharedItemsPackageDrugs")
+                        .HasForeignKey("SharedItemsPackageComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DrugUHIA");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("SharedItemsPackageComponent");
                 });
 
             modelBuilder.Entity("EHealth.ManageItemLists.Domain.PackageSubTypes.PackageSubType", b =>
@@ -3123,6 +3476,13 @@ namespace EHealth.ManageItemLists.DataAccess.Migrations
                     b.Navigation("InvestmentCostDepreciationAndMaintenance");
 
                     b.Navigation("InvestmentCostPackagAssets");
+                });
+
+            modelBuilder.Entity("EHealth.ManageItemLists.Domain.Packages.SharedItemsPackages.SharedItemsPackageComponents.SharedItemsPackageComponent", b =>
+                {
+                    b.Navigation("SharedItemsPackageConsumablesAndDevices");
+
+                    b.Navigation("SharedItemsPackageDrugs");
                 });
 
             modelBuilder.Entity("EHealth.ManageItemLists.Domain.PackageTypes.PackageType", b =>

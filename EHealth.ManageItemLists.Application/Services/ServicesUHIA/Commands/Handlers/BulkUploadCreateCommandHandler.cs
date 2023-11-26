@@ -17,7 +17,6 @@ namespace EHealth.ManageItemLists.Application.Services.ServicesUHIA.Commands.Han
 {
     public class BulkUploadCreateCommandHandler : IRequestHandler<BulkUploadCreateCommand, byte[]?>
     {
-        //get
         private readonly IServiceUHIARepository _serviceUHIARepository;
         private readonly IValidationEngine _validationEngine;
         private readonly IIdentityProvider _identityProvider;

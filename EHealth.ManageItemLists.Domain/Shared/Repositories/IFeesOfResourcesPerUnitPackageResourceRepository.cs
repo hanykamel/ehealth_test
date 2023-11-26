@@ -1,12 +1,6 @@
 ﻿using EHealth.ManageItemLists.Domain.Packages.FeesOfResourcesPerUnitPackage.FeesOfResourcesPerUnitPackageResources;
-using EHealth.ManageItemLists.Domain.Packages.PackageHeaders;
 using EHealth.ManageItemLists.Domain.Shared.Pagination;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EHealth.ManageItemLists.Domain.Shared.Repositories
 {

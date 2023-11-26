@@ -58,7 +58,22 @@ namespace EHealth.ManageItemLists.Domain.ItemLists
             if (IsBusy == isBusy) return;
             IsBusy = isBusy;
         }
+        public static async Task IsListBusy(IItemListRepository repository, int Id, bool throwException = true)
+        {
+            bool isBusy = (await repository.IsListBusy(Id));
 
+            if (isBusy)
+            {
+                string message = "The data not valid";
+                List<ValidationFailure> errors = new List<ValidationFailure>();
+                errors.Add(new ValidationFailure
+                {
+                    ErrorCode = "ItemManagement_MSG_06",
+                    ErrorMessage = "This Record is locked by another user.",
+                });
+                throw new DataNotValidException(message, errors);
+            }
+        }
         public void SetNameAr(string nameAr)
         {
             if (NameAr == nameAr) return;
@@ -83,7 +98,6 @@ namespace EHealth.ManageItemLists.Domain.ItemLists
         {
             validationEngine.Validate(this);
             await EnsureNoDuplicates(repository); // TODO after create getll repo
-
             return await repository.Create(this);
         }
 
@@ -136,12 +150,12 @@ namespace EHealth.ManageItemLists.Domain.ItemLists
 
         private async Task<bool> EnsureNoDuplicates(IItemListRepository repository, bool throwException = true)
         {
-            var dbItemList = await repository.Search(i => i.Id == Id || i.Code == Code || i.NameAr == NameAr || i.NameEN == NameEN, 1, 1, null, null, true);
+            var dbItemList = await repository.Search(i => (i.Id == Id || i.Code == Code || i.NameAr == NameAr || i.NameEN == NameEN) && i.IsDeleted != true, 1, 1, null, null, false);
             string dublicatedProperties = "";
             if (Id == default)
             {
                 List<ValidationFailure>? errors = new List<ValidationFailure>();
-             
+
                 if (dbItemList.Data.Any())
                 {
                     if (dbItemList.Data.Where(x => x.Code == Code).Any())
@@ -223,6 +237,79 @@ namespace EHealth.ManageItemLists.Domain.ItemLists
                 }
             }
             return true;
+        }
+        public async Task<string> ValidateObjectForBulkUpload(IItemListRepository repository, IValidationEngine validationEngine)
+        {
+            var errorsList = "";
+            var errors = validationEngine.Validate(this, false);
+            var duplicateErrors = await GetdDuplicatesErrors(repository);
+
+            if (errors != null)
+            {
+                foreach (var item in errors)
+                {
+                    errorsList += item.ErrorMessage + "\r\n";
+                }
+            }
+
+            if (duplicateErrors != null)
+            {
+                errorsList += duplicateErrors + "\r\n";
+            }
+            return errorsList;
+        }
+        private async Task<string?> GetdDuplicatesErrors(IItemListRepository repository)
+        {
+            var dbItemList = await repository.Search(i => (i.Id == Id || i.Code == Code || i.NameAr == NameAr || i.NameEN == NameEN) && i.IsDeleted != true, 1, 1, null, null, false);
+            string dublicatedProperties = "";
+            if (Id == default)
+            {
+                if (dbItemList.Data.Any())
+                {
+                    if (dbItemList.Data.Where(x => x.Id == Id).Any())
+                    {
+                        dublicatedProperties += "Duplicated Id,";
+                    }
+                    if (dbItemList.Data.Where(x => x.Code == Code).Any())
+                    {
+                        dublicatedProperties += "Duplicated Code,";
+                    }
+        
+                    if (dbItemList.Data.Where(x => x.NameAr == NameAr).Any())
+                    {
+                        dublicatedProperties += "Duplicated NameAr,";
+                    }
+                    if (dbItemList.Data.Where(x => x.NameEN == NameEN).Any())
+                    {
+                        dublicatedProperties += "Duplicated NameEN,";
+                    }
+                    return dublicatedProperties;
+                    //return "These fields are duplicated (" + dublicatedProperties + ")";
+                }
+            }
+            else
+            {
+                if (dbItemList.Data.Any(x => x.Id != Id))
+                {
+                    dbItemList.Data = dbItemList.Data.Where(x => x.Id != Id).ToList();
+                    if (dbItemList.Data.Where(x => x.Code == Code).Any())
+                    {
+                        dublicatedProperties += "Duplicated Code,";
+                    }
+
+                    if (dbItemList.Data.Where(x => x.NameAr == NameAr).Any())
+                    {
+                        dublicatedProperties += "Duplicated NameAr,";
+                    }
+                    if (dbItemList.Data.Where(x => x.NameEN == NameEN).Any())
+                    {
+                        dublicatedProperties += "Duplicated NameEN,";
+                    }
+                    return dublicatedProperties;
+                    //return "These fields are duplicated (" + dublicatedProperties + ")";
+                }
+            }
+            return null;
         }
     }
 }

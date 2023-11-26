@@ -1,7 +1,5 @@
 ﻿using EHealth.ManageItemLists.Application.PackageHeaders.Commands;
 using EHealth.ManageItemLists.Application.PackageHeaders.DTOs;
-using EHealth.ManageItemLists.Application.Services.ServicesUHIA.Commands;
-using EHealth.ManageItemLists.Application.Services.ServicesUHIA.DTOs;
 using EHealth.ManageItemLists.Application.PackageHeaders.Queries;
 using EHealth.ManageItemLists.Domain.Shared.Exceptions;
 using EHealth.ManageItemLists.Domain.Shared.Pagination;
@@ -9,6 +7,7 @@ using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Presentation.ExceptionHandlers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EHealth.ManageItemLists.Presentation.Controllers
 {
@@ -19,10 +18,13 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IPackageHeaderRepository _packageHeaderRepository;
-        public PackageHeadersController(IMediator mediator, IPackageHeaderRepository packageHeaderRepository)
+        private readonly IInvestmentCostPackageComponentRepository _investmentCostPackageComponentRepository;
+
+        public PackageHeadersController(IMediator mediator, IPackageHeaderRepository packageHeaderRepository, IInvestmentCostPackageComponentRepository investmentCostPackageComponentRepository)
         {
             _mediator = mediator;
             _packageHeaderRepository = packageHeaderRepository;
+            _investmentCostPackageComponentRepository = investmentCostPackageComponentRepository;
         }
 
         //[Authorize]
@@ -45,13 +47,21 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             bool res = await _mediator.Send(new UpdatePackageHeaderCommand(request, _packageHeaderRepository));
             return Ok(res);
         }
-
+        //[Authorize]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<PackageHeaderDTO>),200)]
         public async Task<ActionResult<PagedResponse<PackageHeaderDTO>>> Search([FromQuery]PackageHeaderSearchQuery request)
         {
             var res = await _mediator.Send(request);
             return Ok(res);
+        }
+        //[Authorize]
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
+        public async Task<ActionResult<bool>> Delete([FromRoute]Guid id)
+        {
+            return Ok(await _mediator.Send(new DeletePackageHeaderCommand (new DeletePackageHeaderDTO { Id = id },_packageHeaderRepository,_investmentCostPackageComponentRepository)));
         }
 
         [HttpGet("{id:guid}")]

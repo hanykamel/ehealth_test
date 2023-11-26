@@ -1,9 +1,9 @@
-﻿using EHealth.ManageItemLists.Domain.Categories;
+﻿using EHealth.ManageItemLists.Domain.ConsumablesAndDevices;
 using EHealth.ManageItemLists.Domain.DevicesAndAssets.UHIA;
+using EHealth.ManageItemLists.Domain.Procedures.ProceduresICHI;
 using EHealth.ManageItemLists.Domain.Services.ServicesUHIA;
 using EHealth.ManageItemLists.Domain.Shared.Aggregates;
 using EHealth.ManageItemLists.Domain.Shared.Exceptions;
-using EHealth.ManageItemLists.Domain.Shared.Pagination;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Domain.Shared.Validation;
 using FluentValidation;
@@ -11,6 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using EHealth.ManageItemLists.Domain.Procedures.ProceduresICHI;
 using EHealth.ManageItemLists.Domain.DrugsPricing;
 using EHealth.ManageItemLists.Domain.ConsumablesAndDevices;
+using EHealth.ManageItemLists.Domain.Resource.ItemPrice;
 
 namespace EHealth.ManageItemLists.Domain.ItemListPricing
 {
@@ -144,6 +145,7 @@ namespace EHealth.ManageItemLists.Domain.ItemListPricing
             }
             return true;
         }
+   
 
     }
 }

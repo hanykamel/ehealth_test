@@ -32,8 +32,9 @@ namespace EHealth.ManageItemLists.Application.Facility.UHIA.Commands.Handlers
         public async Task<FacilityUHIADto> Handle(UpdateFacilityUHIACommand request, CancellationToken cancellationToken)
         {
             var facilityUHIA = await FacilityUHIA.Get(request.UpdateFacilityUHIADto.Id, _facilityUHIAsRepository);
+            await FacilityUHIA.IsItemListBusy(_facilityUHIAsRepository, facilityUHIA.ItemListId);
 
-            if(facilityUHIA == null)
+            if (facilityUHIA == null)
                 throw new DataNotFoundException();
 
             facilityUHIA.SetCode(request.UpdateFacilityUHIADto.EHealthCode);

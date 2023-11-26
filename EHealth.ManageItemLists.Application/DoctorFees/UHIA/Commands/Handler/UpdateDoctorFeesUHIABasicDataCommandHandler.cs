@@ -24,6 +24,7 @@ namespace EHealth.ManageItemLists.Application.DoctorFees.UHIA.Commands.Handler
             _validationEngine.Validate(request);
 
             var doctorFeesUHIA = await DoctorFeesUHIA.Get(request.Id, _doctorFeesUHIARepository);
+            await DoctorFeesUHIA.IsItemListBusy(_doctorFeesUHIARepository, doctorFeesUHIA.ItemListId);
             doctorFeesUHIA.SetEHealthCode(request.EHealthCode);
             doctorFeesUHIA.SetDescriptorAr(request.DescriptorAr);
             doctorFeesUHIA.SetDescriptorEn(request.DescriptorEn);

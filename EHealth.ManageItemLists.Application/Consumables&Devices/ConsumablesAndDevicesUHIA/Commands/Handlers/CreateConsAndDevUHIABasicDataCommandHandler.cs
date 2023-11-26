@@ -1,7 +1,10 @@
 ﻿using EHealth.ManageItemLists.Application.Services.ServicesUHIA.Commands;
+using EHealth.ManageItemLists.Domain.ConsumablesAndDevices;
+using EHealth.ManageItemLists.Domain.Services.ServicesUHIA;
 using EHealth.ManageItemLists.Domain.Shared.Identity;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Domain.Shared.Validation;
+using EHealth.ManageItemLists.Infrastructure.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -27,7 +30,7 @@ namespace EHealth.ManageItemLists.Application.Consumables_Devices.ConsumablesAnd
         }
         public async Task<Guid> Handle(CreateConsAndDevUHIABasicDataCommand request, CancellationToken cancellationToken)
         {
-
+            await Domain.ConsumablesAndDevices.ConsumablesAndDevicesUHIA.IsItemListBusy(_consumablesAndDevicesUHIARepository, request.ItemListId);
             var consumablesAndDevicesUHIA = request.ToConsumablesAndDevicesUHIA(_identityProvider.GetUserName(), _identityProvider.GetTenantId());
 
 

@@ -10,6 +10,7 @@ using EHealth.ManageItemLists.Domain.Shared.Pagination;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Presentation.ExceptionHandlers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Globalization;
@@ -31,6 +32,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             _devicesAndAssetsUHIARepository = devicesAndAssetsUHIARepository;
         }
 
+        [Authorize(Roles = "itemslist_devices&assets_uhia_view")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<DevicesAndAssetsUHIADto>), 200)]
         public async Task<ActionResult<PagedResponse<DevicesAndAssetsUHIADto>>> Search([FromQuery] DevicesAndAssetsUHIASearchQuery request)
@@ -38,6 +40,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(await _mediator.Send(request));
         }
 
+        [Authorize(Roles = "itemslist_devices&assets_uhia_details,itemslist_devices&assets_uhia_update")]
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(DevicesAndAssetsUHIADto), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -45,6 +48,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
         {
             return Ok(await _mediator.Send(new DevicesAndAssetsUHIAGetByIdQuery { Id = id }));
         }
+
+        [Authorize(Roles = "itemslist_devices&assets_uhia_delete")]
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -53,7 +58,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(await _mediator.Send(new DeleteDevicesAndAssetsUHIACommand { Id = id }));
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_devices&assets_uhia_add")]
         [HttpPost("BasicData/Create")]
         [ProducesResponseType(typeof(Guid), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -64,7 +69,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(id);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_devices&assets_uhia_add")]
         [HttpPost("Prices/Create")]
         [ProducesResponseType(typeof(Guid), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -74,7 +79,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(devicesAndAssetsUHIAId);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_devices&assets_uhia_update")]
         [HttpPut("BasicData/Update")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -85,7 +90,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(res);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_devices&assets_uhia_update")]
         [HttpPut("Prices/Update")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -94,6 +99,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             bool res = await _mediator.Send(new UpdateDevicesAndAssetsUHIAPricesCommand(request, _devicesAndAssetsUHIARepository));
             return Ok(res);
         }
+
+        [Authorize(Roles = "itemslist_devices&assets_uhia_export")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<DevicesAndAssetsUHIADto>), 200)]
         public async Task<ActionResult<PagedResponse<DevicesAndAssetsUHIADto>>> CreateTemplateDeviceAndAssetUHIA([FromQuery] CreateTemplateDevicesAndAssetUHIASearchQuery request)
@@ -113,12 +120,16 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
                 return GenerateCSV(fileName, res);
             }
         }
+
+        [Authorize(Roles = "itemslist_devices&assets_uhia_bulkupload")]
         [HttpGet("[Action]")]
         public async Task<IActionResult> DownloadBulkTemplate([FromQuery] DownloadDevicesndAssetsUhiaBulkTemplateCommand request)
         {
             var result = await _mediator.Send(request);
             return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Devices And Assets - UHIA.xlsx");
         }
+
+        [Authorize(Roles = "itemslist_devices&assets_uhia_bulkupload")]
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]

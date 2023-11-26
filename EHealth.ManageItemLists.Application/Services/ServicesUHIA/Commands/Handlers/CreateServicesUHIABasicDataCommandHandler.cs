@@ -25,17 +25,12 @@ namespace EHealth.ManageItemLists.Application.Services.ServicesUHIA.Commands.Han
             _validationEngine = validationEngine;
             _identityProvider = identityProvider;
         }
-        //add documentation to this function
-
-       
         public async Task<Guid> Handle(CreateServicesUHIABasicDataCommand request, CancellationToken cancellationToken)
         {
             // Throw exception if item list busy
             await ServiceUHIA.IsItemListBusy(_serviceUHIARepository, request.ItemListId);
-            //call request to create serviceUHIA and pass the repository and validation engine
-            var serviceUHIA = request.ToServiceUHIA(_identityProvider.GetUserName(), _identityProvider.GetTenantId());
 
-            
+            var serviceUHIA = request.ToServiceUHIA(_identityProvider.GetUserName(), _identityProvider.GetTenantId());
             await serviceUHIA.Create(_serviceUHIARepository, _validationEngine);
 
             return serviceUHIA.Id;

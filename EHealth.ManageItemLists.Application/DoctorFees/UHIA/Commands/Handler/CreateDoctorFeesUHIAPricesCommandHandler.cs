@@ -3,7 +3,6 @@ using EHealth.ManageItemLists.Domain.Shared.Identity;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Domain.Shared.Validation;
 using MediatR;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace EHealth.ManageItemLists.Application.DoctorFees.UHIA.Commands.Handler
 {
@@ -24,7 +23,7 @@ namespace EHealth.ManageItemLists.Application.DoctorFees.UHIA.Commands.Handler
             _validationEngine.Validate(request);
 
             var drFeesUHIA = await DoctorFeesUHIA.Get(request.DoctorFeesUHIAId, _doctorFeesUHIARepository);
-
+              await DoctorFeesUHIA.IsItemListBusy(_doctorFeesUHIARepository, drFeesUHIA.ItemListId);
             foreach (var item in request.ItemListPrices)
             {
                 var itemListPrice = item.ToDrFeesItemPrice(_identityProvider.GetUserName(), _identityProvider.GetTenantId());

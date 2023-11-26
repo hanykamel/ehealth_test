@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EHealth.ManageItemLists.Domain.Resource.UHIA
 {
-    public class ResourceUHIA : EHealthDomainObject, IEntity<Guid>, IValidationModel<ResourceUHIA>
+    public class ResourceUHIA : EHealthDomainObject, IEntity<Guid>, IGetPrice, IValidationModel<ResourceUHIA>
     {
         private ResourceUHIA()
         {
@@ -126,7 +126,7 @@ namespace EHealth.ManageItemLists.Domain.Resource.UHIA
             return dbResourceUHIA;
         }
 
-        public static ResourceUHIA Create(Guid? id,string code, string? descriptorAr, string descriptorEn,
+        public static ResourceUHIA Create(Guid? id, string code, string? descriptorAr, string descriptorEn,
            int categoryId, int subCategoryId, DateTime dataEffectiveDateFrom, int itemList, DateTime? dataEffectiveDateTo, string createdBy, string tenantId)
         {
             return new ResourceUHIA
@@ -347,6 +347,24 @@ namespace EHealth.ManageItemLists.Domain.Resource.UHIA
                 }
             }
             return null;
+        }
+
+        public async Task<ResourceItemPrice?> GetPriceByDate(DateTime? date)
+        {
+            ResourceItemPrice? price;
+            if (date.HasValue)
+            {
+                price = ItemListPrices.Where(p => p.EffectiveDateFrom <= date && (p.EffectiveDateTo >= date || p.EffectiveDateTo is null)).FirstOrDefault();
+                if (price is null)
+                {
+                    price = ItemListPrices.OrderByDescending(p => p.EffectiveDateFrom).FirstOrDefault();
+                }
+            }
+            else
+            {
+                price = ItemListPrices.OrderByDescending(p => p.EffectiveDateFrom).FirstOrDefault();
+            }
+            return price;
         }
     }
 }

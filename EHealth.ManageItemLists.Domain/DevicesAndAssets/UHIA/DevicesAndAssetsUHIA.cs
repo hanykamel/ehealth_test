@@ -1,6 +1,7 @@
 ﻿using EHealth.ManageItemLists.Domain.Categories;
 using EHealth.ManageItemLists.Domain.ItemListPricing;
 using EHealth.ManageItemLists.Domain.ItemLists;
+using EHealth.ManageItemLists.Domain.Resource.ItemPrice;
 using EHealth.ManageItemLists.Domain.Shared.Aggregates;
 using EHealth.ManageItemLists.Domain.Shared.Exceptions;
 using EHealth.ManageItemLists.Domain.Shared.Pagination;
@@ -121,7 +122,7 @@ namespace EHealth.ManageItemLists.Domain.DevicesAndAssets.UHIA
             return dbDevicesAndAssetsUHIA;
         }
 
-        public static DevicesAndAssetsUHIA Create(Guid?id, string code, string descriptorAr, string descriptorEn, int? unitRoomId,
+        public static DevicesAndAssetsUHIA Create(Guid? id, string code, string descriptorAr, string descriptorEn, int? unitRoomId,
             int categoryId, int subCategoryId, DateTime dataEffectiveDateFrom, DateTime? dataEffectiveDateTo, int itemListId, string createdBy, string tenantId)
         {
             return new DevicesAndAssetsUHIA
@@ -144,7 +145,7 @@ namespace EHealth.ManageItemLists.Domain.DevicesAndAssets.UHIA
 
         private async Task<bool> EnsureNoDuplicates(IDevicesAndAssetsUHIARepository repository, bool throwException = true)
         {
-            var dbDevicesAndAssetsUHIA = await repository.Search(x =>( x.Id == Id || x.Code == Code
+            var dbDevicesAndAssetsUHIA = await repository.Search(x => (x.Id == Id || x.Code == Code
                                                          || (x.DescriptorAr == DescriptorAr && (!string.IsNullOrEmpty(x.DescriptorAr))) ||
                                                         x.DescriptorEn == DescriptorEn) && x.IsDeleted != true, 1, 1, true, null, null);
             string dublicatedProperties = "";
@@ -340,6 +341,41 @@ namespace EHealth.ManageItemLists.Domain.DevicesAndAssets.UHIA
                 }
             }
             return null;
+        }
+
+        public ItemListPrice? GetPriceByDate(DateTime? date)
+        {
+            ItemListPrice? price;
+            if (date.HasValue)
+            {
+                price = ItemListPrices.Where(p => p.EffectiveDateFrom <= date && (p.EffectiveDateTo >= date || p.EffectiveDateTo is null)).FirstOrDefault();
+                if (price is null)
+                {
+                    price = ItemListPrices.OrderByDescending(p => p.EffectiveDateFrom).FirstOrDefault();
+                }
+            }
+            else
+            {
+                price = ItemListPrices.OrderByDescending(p => p.EffectiveDateFrom).FirstOrDefault();
+            }
+            return price;
+        }
+        public async void /*Task<ItemListPrice?>*/ SetPriceByDate(DateTime? date)
+        {
+            //ItemListPrice? price;
+            if (date.HasValue)
+            {
+                ItemListPrices = ItemListPrices.Where(p => p.EffectiveDateFrom <= date && (p.EffectiveDateTo >= date || p.EffectiveDateTo is null)).ToList();
+                if (ItemListPrices is null)
+                {
+                    ItemListPrices = ItemListPrices.OrderByDescending(p => p.EffectiveDateFrom).ToList();
+                }
+            }
+            else
+            {
+                ItemListPrices = ItemListPrices.OrderByDescending(p => p.EffectiveDateFrom).ToList();
+            }
+            //return ItemListPrices;
         }
     }
 }

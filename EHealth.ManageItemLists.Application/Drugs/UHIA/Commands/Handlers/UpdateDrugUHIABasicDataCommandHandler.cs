@@ -34,6 +34,7 @@ namespace EHealth.ManageItemLists.Application.Drugs.UHIA.Commands.Handlers
             _validationEngine.Validate(request);
 
             var drugUHIA = await DrugUHIA.Get(request.Id, _drugsUHIARepository);
+            await DrugUHIA.IsItemListBusy(_drugsUHIARepository, drugUHIA.ItemListId);
             drugUHIA.SetEHealthDrugCode(request.EHealthCode);
             drugUHIA.SetLocalDrugCode(request.LocalDrugCode);
             drugUHIA.SetInternationalNonProprietaryName(request.InternationalNonProprietaryName);

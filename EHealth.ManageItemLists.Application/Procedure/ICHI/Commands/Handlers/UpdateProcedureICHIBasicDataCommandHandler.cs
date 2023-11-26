@@ -31,6 +31,7 @@ namespace EHealth.ManageItemLists.Application.Procedure.ICHI.Commands.Handlers
             _validationEngine.Validate(request);
 
             var pocedureICHI = await ProcedureICHI.Get(request.Id, _procedureICHIRepository);
+            await ProcedureICHI.IsItemListBusy(_procedureICHIRepository, pocedureICHI.ItemListId);
             pocedureICHI.SetEHealthCode(request.EHealthCode);
             pocedureICHI.SetUHIAId(request.UHIAId);
             pocedureICHI.SetTitleAr(request.TitleAr);

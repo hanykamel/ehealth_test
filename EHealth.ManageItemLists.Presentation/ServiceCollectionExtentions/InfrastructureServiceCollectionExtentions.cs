@@ -1,5 +1,7 @@
 ﻿
+using EHealth.ManageItemLists.Domain.Shared.Redis;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
+using EHealth.ManageItemLists.Infrastructure.Redis;
 using EHealth.ManageItemLists.Infrastructure.Repositories;
 using EHealth.ManageItemLists.Infrastructure.Repositories.Lookups;
 using EHealth.ManageItemLists.Presentation.Controllers;
@@ -42,6 +44,17 @@ namespace EHealth.ManageItemLists.Presentation.ServiceCollectionExtentions
             services.AddTransient<IGlobelPackageTypeRepository, GlobalPackageTypeRepository>();
             services.AddTransient<IPackageSubTypeRepository, PackageSubTypeRepository>();
             services.AddTransient<IPackageHeaderRepository, PackageHeaderRepository>();
+            services.AddTransient<IFeesOfResourcesPerUnitPackageComponentRepository, FeesOfResourcesPerUnitPackageComponentRepository>();
+            services.AddTransient<IFeesOfResourcesPerUnitPackageResourceRepository, FeesOfResourcesPerUnitPackageResourceRepository>();
+            services.AddTransient<IInvestmentCostPackageAssetRepository, InvestmentCostPackageAssetRepository>();
+            services.AddTransient<IInvestmentCostDepreciationAndMaintenanceRepository, InvestmentCostDepreciationAndMaintenanceRepository>();
+            services.AddTransient<IInvestmentCostPackageComponentRepository, InvestmentCostPackageComponentRepository>();
+            services.AddScoped<ICacheService, CacheService>();
+            services.AddTransient<ISharedItemsPackageConsumableAndDeviceRepository, SharedItemsPackageConsumableAndDeviceRepository>();
+            services.AddTransient<ISharedItemsPackageDrugRepository, SharedItemsPackageDrugRepository>();
+            services.AddTransient<ISharedItemsPackageComponentRepository, SharedItemsPackageComponentRepository>();
+            services.AddTransient<ILocationsRepository, LocationsRepository>();
+            services.AddTransient<IInvestmentCostPackageSummaryRepository, InvestmentCostPackageSummaryRepository>();
 
             return services;
 

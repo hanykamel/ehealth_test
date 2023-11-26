@@ -18,5 +18,7 @@ namespace EHealth.ManageItemLists.Domain.Shared.Repositories
         Task<bool> Delete(Location input);
         Task<PagedResponse<Location>> Search(Expression<Func<Location, bool>> predicate, int pageNumber, int pageSize, bool enablePagination);
         Task<Location> GetById(int id);
+        Task<Location?> Get(int id);
+
     }
 }

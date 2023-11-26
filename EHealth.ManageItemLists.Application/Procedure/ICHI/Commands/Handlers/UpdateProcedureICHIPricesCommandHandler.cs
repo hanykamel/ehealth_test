@@ -35,7 +35,7 @@ namespace EHealth.ManageItemLists.Application.Procedure.ICHI.Commands.Handlers
             _validationEngine.Validate(request);
 
             var procedureICHI = await ProcedureICHI.Get(request.ProcedureICHIId, _procedureICHIRepository);
-
+            await ProcedureICHI.IsItemListBusy(_procedureICHIRepository, procedureICHI.ItemListId);
             var userId = _identityProvider.GetUserName();
             var tenantId = _identityProvider.GetTenantId();
 

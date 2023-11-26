@@ -37,6 +37,7 @@ namespace EHealth.ManageItemLists.Application.Resource.UHIA.Commands.Handlers
             //validate model 
             _validationEngine.Validate(request);
             var resourceUHIA = await ResourceUHIA.Get(request.ResourceUHIAId, _resourceUHIARepository);
+            await ResourceUHIA.IsItemListBusy(_resourceUHIARepository, resourceUHIA.ItemListId);
             var resourcePrices = request.ResourceItemPrices.Select(p => p.ToResourceItemPrice(_identityProvider.GetUserName(), _identityProvider.GetTenantId())).ToList();
             await resourceUHIA.AddResourcePrices(_resourceUHIARepository, _validationEngine, resourcePrices);
             return true;

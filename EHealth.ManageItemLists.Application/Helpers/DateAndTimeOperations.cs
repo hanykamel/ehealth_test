@@ -33,5 +33,31 @@ namespace EHealth.ManageItemLists.Application.Helpers
             return true;
         }
 
+        public static bool DoesNotOverlap(DateRangeDto item1 , DateRangeDto item2)
+        {
+            List<DateRangeDto> DateRangeLst = new List<DateRangeDto>();
+            DateRangeLst.Add(item1);
+            DateRangeLst.Add(item2);
+
+            DateTime endPrior = DateTime.MinValue;
+            foreach (var item in DateRangeLst.OrderBy(x => x.Start))
+            {
+                if (item.Start > item.End)
+                    return false;
+                if (item.Start <= endPrior)
+                    return false;
+
+                if (!item.End.HasValue)
+                {
+                    endPrior = DateTime.MaxValue;
+                }
+                else
+                {
+                    endPrior = (DateTime)item.End;
+                }
+            }
+            return true;
+        }
+
     }
 }

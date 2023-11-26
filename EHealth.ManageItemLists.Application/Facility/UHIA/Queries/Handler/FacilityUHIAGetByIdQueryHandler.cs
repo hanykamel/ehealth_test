@@ -1,13 +1,7 @@
 ﻿using EHealth.ManageItemLists.Application.Facility.UHIA.DTOs;
 using EHealth.ManageItemLists.Domain.Facility.UHIA;
-using EHealth.ManageItemLists.Domain.Shared.Pagination;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EHealth.ManageItemLists.Application.Facility.UHIA.Queries.Handler
 {

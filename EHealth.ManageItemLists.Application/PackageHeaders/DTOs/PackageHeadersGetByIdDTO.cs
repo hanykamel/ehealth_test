@@ -60,7 +60,7 @@ namespace EHealth.ManageItemLists.Application.PackageHeaders.DTOs
             GlobelPackageTypeId = input.GlobelPackageTypeId,
             GlobelPackageType = GlobalPackageTypeDTO.FromGlobalPackageType(input.GlobelPackageType),
             PackageSpecialtyId = input.PackageSpecialtyId,
-            PackageSpecialty = PackageSpecialtyDto.FromPackageSpecialty(input.PackageSpecialty),
+            PackageSpecialty = PackageSpecialtyDto.FromPackageSpecialty( input.PackageSpecialty),
             PackageDuration = input.PackageDuration,
             ActivationDateFrom = input.ActivationDateFrom,
             ActivationDateTo = input.ActivationDateTo,

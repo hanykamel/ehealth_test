@@ -20,6 +20,7 @@ namespace EHealth.ManageItemLists.Application.Procedure.ICHI.Commands.Handlers
         public async Task<bool> Handle(DeleteProcedureICHICommand request, CancellationToken cancellationToken)
         {
             var ProdcedureICHI = await ProcedureICHI.Get(request.Id, _procedureICHIRepository);
+            await ProcedureICHI.IsItemListBusy(_procedureICHIRepository, ProdcedureICHI.ItemListId);
             if (ProdcedureICHI is not null)
             {
                 ProdcedureICHI.IsDeleted = true;

@@ -1,4 +1,5 @@
-﻿using EHealth.ManageItemLists.Domain.Resource.UHIA;
+﻿using EHealth.ManageItemLists.Domain.Facility.UHIA;
+using EHealth.ManageItemLists.Domain.Resource.UHIA;
 using EHealth.ManageItemLists.Domain.Shared.Exceptions;
 using EHealth.ManageItemLists.Domain.Shared.Identity;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
@@ -28,8 +29,9 @@ namespace EHealth.ManageItemLists.Application.Facility.UHIA.Commands.Handlers
         public async Task<bool> Handle(DeleteFacilityUHIACommand request, CancellationToken cancellationToken)
         {
             var facilityUhia = await _facilityUHIAsRepository.Get(request.Id);
+            await FacilityUHIA.IsItemListBusy(_facilityUHIAsRepository, facilityUhia.ItemListId);
 
-            if(facilityUhia == null)
+            if (facilityUhia == null)
             {
                 throw new DataNotFoundException();
             }

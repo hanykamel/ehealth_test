@@ -1,8 +1,6 @@
 ﻿using ClosedXML.Excel;
 using CsvHelper;
 using CsvHelper.Configuration;
-using EHealth.ManageItemLists.Application.DoctorFees.UHIA.Commands;
-using EHealth.ManageItemLists.Application.Facility.UHIA.Commands;
 using EHealth.ManageItemLists.Application.ItemLists.Commands;
 using EHealth.ManageItemLists.Application.ItemLists.DTOs;
 using EHealth.ManageItemLists.Application.ItemLists.Queries;
@@ -11,6 +9,7 @@ using EHealth.ManageItemLists.Domain.Shared.Pagination;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Presentation.ExceptionHandlers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Globalization;
@@ -46,7 +45,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             _resourceUHIARepository = resourceUHIARepository;
             _doctorFeesUHIARepository = doctorFeesUHIARepository;
         }
-        ////[Authorize]
+        
+        [Authorize(Roles = "listmanagement_view")]
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(ItemListDto), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -55,19 +55,17 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(await _mediator.Send(new GetItemListByIdQuery(id)));
         }
 
-        //[Authorize]
+        [Authorize(Roles = "listmanagement_add")]
         [HttpPost]
         [ProducesResponseType(typeof(int), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
         public async Task<CreatedResult> Create([FromBody] CreateItemListDto request)
         {
-            
-
             var itemList = await _mediator.Send(new CreateItemListCommand(request));
             return Created("api/ItemLists/" + itemList.Id, itemList.Id);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "listmanagement_update")]
         [HttpPut]
         [ProducesResponseType(typeof(ItemListDto), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -76,7 +74,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(await _mediator.Send(new UpdateItemListCommand(request)));
         }
 
-        //[Authorize]
+        [Authorize(Roles = "listmanagement_delete")]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -87,13 +85,15 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
            , _devicesAndAssetsUHIARepository, _facilityUHIARepository, _resourceUHIARepository, _doctorFeesUHIARepository)));
         }
 
-        //[Authorize]
+        [Authorize(Roles = "listmanagement_view")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<ItemListDto>), 200)]
         public async Task<ActionResult<PagedResponse<ItemListDto>>> Search([FromQuery] SearchItemListQuery request)
         {
             return Ok(await _mediator.Send(request));
         }
+
+        [Authorize(Roles = "listmanagement_export")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<ItemListDto>), 200)]
         public async Task<ActionResult<PagedResponse<ItemListDto>>> CreateTemplateItemList([FromQuery] CreateTemplateItemListSearchQuery request)
@@ -113,6 +113,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
                 return GenerateCSV(fileName, res);
             }
         }
+
+        [Authorize(Roles = "listmanagement_bulkupload")]
         [HttpGet("[Action]")]
         public async Task<IActionResult> DownloadBulkTemplate([FromQuery] DownloadItemListBulkTemplateCommand request)
         {
@@ -138,16 +140,18 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
                 }
             }
         }
+
+        [Authorize(Roles = "listmanagement_bulkupload")]
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
         public async Task<IActionResult> BulkUpload([FromForm] IFormFile file)
         {
-            var res = await _mediator.Send(new BulkUploadDrFeesCreateCommand(file));
+            var res = await _mediator.Send(new BulkUploadItemListCreateCommand(file));
 
             if (res != null)
             {
-                var fileName = "Doctor's Fees-UHIA-With-Errors.xlsx";
+                var fileName = "ItemList-With-Errors.xlsx";
                 return File(res, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
             }
 

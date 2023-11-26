@@ -38,7 +38,7 @@ namespace EHealth.ManageItemLists.Application.Resource.UHIA.Commands.Handlers
             _validationEngine.Validate(request);
 
             var resourceUHIA = await ResourceUHIA.Get(request.ResourceUHIAId, _resourcesUHIARepository);
-
+            await ResourceUHIA.IsItemListBusy(_resourcesUHIARepository, resourceUHIA.ItemListId);
             //get edited items
             var editedItemsIds = request.ResourceItemPrices.Where(p => p.Id != 0).Select(p => p.Id);
             //get deleted items

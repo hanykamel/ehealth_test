@@ -29,6 +29,7 @@ namespace EHealth.ManageItemLists.Application.Resource.UHIA.Commands.Handlers
         public async Task<bool> Handle(DeleteResourceUHIACommand request, CancellationToken cancellationToken)
         {
             var resourceUHIA = await ResourceUHIA.Get(request.Id, _resourceUHIARepository);
+            await ResourceUHIA.IsItemListBusy(_resourceUHIARepository, resourceUHIA.ItemListId);
             if (resourceUHIA is not null)
             {
                 resourceUHIA.SoftDelete(_identityProvider.GetUserName());

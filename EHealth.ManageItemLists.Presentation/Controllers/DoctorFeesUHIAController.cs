@@ -10,6 +10,7 @@ using EHealth.ManageItemLists.Domain.Shared.Pagination;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Presentation.ExceptionHandlers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Globalization;
@@ -28,7 +29,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             _mediator = mediator;
             _doctorFeesUHIARepository = doctorFeesUHIARepository;
         }
-        //[Authorize]
+
+        [Authorize(Roles = "itemslist_doctorfees_uhia_add")]
         [HttpPost("BasicData/Create")]
         [ProducesResponseType(typeof(Guid), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -38,7 +40,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             Guid id = await _mediator.Send(new CreateDoctorFeesUHIABasicDataCommand(request));
             return Ok(id);
         }
-        //[Authorize]
+
+        [Authorize(Roles = "itemslist_doctorfees_uhia_add")]
         [HttpPost("Prices/Create")]
         [ProducesResponseType(typeof(Guid), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -47,7 +50,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(await _mediator.Send(new CreateDoctorFeesUHIAPricesCommand(request, _doctorFeesUHIARepository)));
 
         }
-        //[Authorize]
+
+        [Authorize(Roles = "itemslist_doctorfees_uhia_update")]
         [HttpPut("BasicData/Update")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -57,7 +61,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             bool res = await _mediator.Send(new UpdateDoctorFeesUHIABasicDataCommand(request, _doctorFeesUHIARepository));
             return Ok(res);
         }
-        //[Authorize]
+
+        [Authorize(Roles = "itemslist_doctorfees_uhia_update")]
         [HttpPut("Prices/Update")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -66,14 +71,16 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             bool res = await _mediator.Send(new UpdateDoctorFeesUHIAPricesCommand(request, _doctorFeesUHIARepository));
             return Ok(res);
         }
-        //[Authorize]
+
+        [Authorize(Roles = "itemslist_doctorfees_uhia_view")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<DoctorFeesUHIADto>), 200)]
         public async Task<ActionResult<PagedResponse<DoctorFeesUHIADto>>> Search([FromQuery] DoctorFeesUHIASearchQuery request)
         {
             return Ok(await _mediator.Send(request));
         }
-        //[Authorize]
+
+        [Authorize(Roles = "itemslist_doctorfees_uhia_details,itemslist_doctorfees_uhia_update")]
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(DoctorFeesUHIADto), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -82,7 +89,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(await _mediator.Send(new DoctorFeesUHIAGetByIdQuery { Id = id }));
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_doctorfees_uhia_delete")]
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -90,6 +97,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
         {
             return Ok(await _mediator.Send(new DeleteDoctorFeesUHIACommand { Id = id }));
         }
+
+        [Authorize(Roles = "itemslist_doctorfees_uhia_export")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<DoctorFeesUHIADto>), 200)]
         public async Task<ActionResult<PagedResponse<DoctorFeesUHIADto>>> CreateTemplateDoctorFeesUHIA([FromQuery] CreateTemplateDoctorFeesUHIASearchQuery request)
@@ -109,6 +118,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
                 return GenerateCSV(fileName, res);
             }
         }
+
+        [Authorize(Roles = "itemslist_doctorfees_uhia_bulkupload")]
         [HttpGet("[Action]")]
         public async Task<IActionResult> DownloadBulkTemplate([FromQuery] DownloadDoctorFeesUhiaBulkTemplateCommand request)
         {
@@ -116,6 +127,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Doctor Fees - UHIA.xlsx");
         }
 
+        [Authorize(Roles = "itemslist_doctorfees_uhia_bulkupload")]
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]

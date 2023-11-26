@@ -1,9 +1,11 @@
 ﻿using EHealth.ManageItemLists.Application.Services.ServicesUHIA.Commands;
+using EHealth.ManageItemLists.DataAccess.Migrations;
 using EHealth.ManageItemLists.Domain.ItemListPricing;
 using EHealth.ManageItemLists.Domain.Services.ServicesUHIA;
 using EHealth.ManageItemLists.Domain.Shared.Identity;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Domain.Shared.Validation;
+using EHealth.ManageItemLists.Infrastructure.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -33,7 +35,7 @@ namespace EHealth.ManageItemLists.Application.Consumables_Devices.ConsumablesAnd
             _validationEngine.Validate(request);
 
             var consumablesAndDevicesUHIA = await Domain.ConsumablesAndDevices.ConsumablesAndDevicesUHIA.Get(request.ConsumablesAndDevicesUHIAId, _consumablesAndDevicesUHIARepository);
-
+            await Domain.ConsumablesAndDevices.ConsumablesAndDevicesUHIA.IsItemListBusy(_consumablesAndDevicesUHIARepository, consumablesAndDevicesUHIA.ItemListId);
             foreach (var item in request.ItemListPrices)
             {
                 var itemListPrice = item.ToItemListPrice(_identityProvider.GetUserName(), _identityProvider.GetTenantId());

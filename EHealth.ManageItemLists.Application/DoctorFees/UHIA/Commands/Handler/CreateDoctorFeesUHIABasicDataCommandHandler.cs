@@ -1,14 +1,9 @@
-﻿using EHealth.ManageItemLists.Application.Services.ServicesUHIA.Commands;
+﻿using EHealth.ManageItemLists.Domain.DevicesAndAssets.UHIA;
+using EHealth.ManageItemLists.Domain.DoctorFees.UHIA;
 using EHealth.ManageItemLists.Domain.Shared.Identity;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Domain.Shared.Validation;
-using EHealth.ManageItemLists.Infrastructure.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EHealth.ManageItemLists.Application.DoctorFees.UHIA.Commands.Handler
 {
@@ -26,7 +21,7 @@ namespace EHealth.ManageItemLists.Application.DoctorFees.UHIA.Commands.Handler
         }
         public async Task<Guid> Handle(CreateDoctorFeesUHIABasicDataCommand request, CancellationToken cancellationToken)
         {
-
+            await DoctorFeesUHIA.IsItemListBusy(_doctorFeesUHIARepository, request.ItemListId);
             var drFeesUHIA = request.ToDrFeesUHIA(_identityProvider.GetUserName(), _identityProvider.GetTenantId());
             await drFeesUHIA.Create(_doctorFeesUHIARepository, _validationEngine);
 

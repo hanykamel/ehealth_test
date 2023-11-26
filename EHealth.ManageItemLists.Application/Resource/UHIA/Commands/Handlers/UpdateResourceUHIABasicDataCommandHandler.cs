@@ -33,6 +33,7 @@ namespace EHealth.ManageItemLists.Application.Resource.UHIA.Commands.Handlers
             _validationEngine.Validate(request);
 
             var resourceUHIA = await ResourceUHIA.Get(request.Id, _resourceUHIARepository);
+            await ResourceUHIA.IsItemListBusy(_resourceUHIARepository, resourceUHIA.ItemListId);
             resourceUHIA.SetEHealthCode(request.EHealthCode);
             resourceUHIA.SetDescriptorAr(request.DescriptorAr);
             resourceUHIA.SetDescriptorEn(request.DescriptorEn);

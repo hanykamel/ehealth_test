@@ -51,7 +51,7 @@ namespace EHealth.ManageItemLists.Domain.Locations
 
         public static async Task<Location> Get(int id, ILocationsRepository repository)
         {
-            var dbLocation = await repository.GetById(id);
+            var dbLocation = await repository.Get(id);
 
             if (dbLocation is null)
             {

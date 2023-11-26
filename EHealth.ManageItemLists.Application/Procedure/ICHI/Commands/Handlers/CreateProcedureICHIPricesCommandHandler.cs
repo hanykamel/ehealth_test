@@ -34,6 +34,7 @@ namespace EHealth.ManageItemLists.Application.Procedure.ICHI.Commands.Handlers
             _validationEngine.Validate(request);
 
             var procedureICHI = await ProcedureICHI.Get(request.ProcedureICHIId, _procedureICHIRepository);
+            await ProcedureICHI.IsItemListBusy(_procedureICHIRepository, procedureICHI.ItemListId);
             var prices = request.ItemListPrices.Select(x => x.ToItemListPrice(_identityProvider.GetUserName(), _identityProvider.GetTenantId())).ToList();
             await procedureICHI.AddPrices(_procedureICHIRepository, _validationEngine, prices);
 

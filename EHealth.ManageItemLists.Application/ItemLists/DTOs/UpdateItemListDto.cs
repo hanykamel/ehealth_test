@@ -1,9 +1,4 @@
 ﻿using EHealth.ManageItemLists.Domain.ItemLists;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EHealth.ManageItemLists.Application.ItemLists.DTOs
 {
@@ -14,5 +9,6 @@ namespace EHealth.ManageItemLists.Application.ItemLists.DTOs
         public string NameEN { get; set; }
         public int ItemListSubtypeId { get; set; }
         public bool Active { get; set; }
+        public ItemList ToItemList(string code, string createdBy, string tenantId) => ItemList.Create(Id, code, NameAr, NameEN, ItemListSubtypeId, createdBy, tenantId);
     }
 }

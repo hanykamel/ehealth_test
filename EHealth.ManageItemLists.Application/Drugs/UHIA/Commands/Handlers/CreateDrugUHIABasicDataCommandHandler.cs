@@ -1,4 +1,5 @@
 ﻿using EHealth.ManageItemLists.Application.Services.ServicesUHIA.Commands;
+using EHealth.ManageItemLists.Domain.Drugs.DrugsUHIA;
 using EHealth.ManageItemLists.Domain.Shared.Identity;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Domain.Shared.Validation;
@@ -27,6 +28,7 @@ namespace EHealth.ManageItemLists.Application.Drugs.UHIA.Commands.Handlers
         }
         public async Task<Guid> Handle(CreateDrugUHIABasicDataCommand request, CancellationToken cancellationToken)
         {
+            await DrugUHIA.IsItemListBusy(_drugsUHIARepository, request.ItemListId);
             var drugUHIA = request.ToDrugUHIA(_identityProvider.GetUserName(), _identityProvider.GetTenantId());
             await drugUHIA.Create(_drugsUHIARepository, _validationEngine);
             return drugUHIA.Id;

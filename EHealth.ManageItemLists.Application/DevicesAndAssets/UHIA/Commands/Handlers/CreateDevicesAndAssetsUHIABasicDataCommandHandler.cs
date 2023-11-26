@@ -1,7 +1,10 @@
 ﻿using EHealth.ManageItemLists.Application.Services.ServicesUHIA.Commands;
+using EHealth.ManageItemLists.Domain.DevicesAndAssets.UHIA;
+using EHealth.ManageItemLists.Domain.Services.ServicesUHIA;
 using EHealth.ManageItemLists.Domain.Shared.Identity;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Domain.Shared.Validation;
+using EHealth.ManageItemLists.Infrastructure.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -26,7 +29,7 @@ namespace EHealth.ManageItemLists.Application.DevicesAndAssets.UHIA.Commands.Han
         }
         public async Task<Guid> Handle(CreateDevicesAndAssetsUHIABasicDataCommand request, CancellationToken cancellationToken)
         {
-
+            await DevicesAndAssetsUHIA.IsItemListBusy(_devicesAndAssetsUHIARepository, request.ItemListId);
             var devicesAndAssetsUHIA = request.ToDevicesAndAssetsUHIA(_identityProvider.GetUserName(), _identityProvider.GetTenantId());
             await devicesAndAssetsUHIA.Create(_devicesAndAssetsUHIARepository, _validationEngine);
 

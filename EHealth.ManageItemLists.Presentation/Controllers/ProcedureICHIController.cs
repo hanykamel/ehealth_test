@@ -9,6 +9,7 @@ using EHealth.ManageItemLists.Domain.Shared.Pagination;
 using EHealth.ManageItemLists.Domain.Shared.Repositories;
 using EHealth.ManageItemLists.Presentation.ExceptionHandlers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Globalization;
@@ -29,13 +30,16 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             _mediator = mediator;
             _procedureICHIRepository = procedureICHIRepository;
         }
+
+        [Authorize(Roles = "itemslist_procedure_ichi_view")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<ProcedureICHIDto>), 200)]
         public async Task<ActionResult<PagedResponse<ProcedureICHIDto>>> Search([FromQuery] ProcedureICHISearchQuery request)
         {
             return Ok(await _mediator.Send(request));
         }
-        ////[Authorize]
+
+        [Authorize(Roles = "itemslist_procedure_ichi_details,itemslist_procedure_ichi_update")]
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(ProcedureICHIDto), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -43,6 +47,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
         {
             return Ok(await _mediator.Send(new ProcedureICHIGetByIdQuery { Id = id }));
         }
+
+        [Authorize(Roles = "itemslist_procedure_ichi_delete")]
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotFound)]
@@ -51,7 +57,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(await _mediator.Send(new DeleteProcedureICHICommand { Id = id }));
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_procedure_ichi_add")]
         [HttpPost("BasicData/Create")]
         [ProducesResponseType(typeof(Guid), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -62,7 +68,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(id);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_procedure_ichi_add")]
         [HttpPost("Prices/Create")]
         [ProducesResponseType(typeof(Guid), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -72,7 +78,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(procedureICHIId);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_procedure_ichi_update")]
         [HttpPut("BasicData/Update")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -83,7 +89,7 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             return Ok(res);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "itemslist_procedure_ichi_update")]
         [HttpPut("Prices/Update")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]
@@ -92,6 +98,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
             bool res = await _mediator.Send(new UpdateProcedureICHIPricesCommand(request, _procedureICHIRepository));
             return Ok(res);
         }
+
+        [Authorize(Roles = "itemslist_procedure_ichi_export")]
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(PagedResponse<ProcedureICHIDto>), 200)]
         public async Task<ActionResult<PagedResponse<ProcedureICHIDto>>> CreateTemplateProcedureICHI([FromQuery] CreateTemplateProcedureICHISearchQuery request)
@@ -111,6 +119,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
                 return GenerateCSV(fileName, res);
             }
         }
+
+        [Authorize(Roles = "itemslist_procedure_ichi_bulkupload")]
         [HttpGet("[Action]")]
         public async Task<IActionResult> DownloadBulkTemplate([FromQuery] DownloadProcedureICHIBulkTemplateCommand request)
         {
@@ -136,6 +146,8 @@ namespace EHealth.ManageItemLists.Presentation.Controllers
                 }
             }
         }
+
+        [Authorize(Roles = "itemslist_procedure_ichi_bulkupload")]
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(HttpException), GeideaHttpStatusCodes.DataNotValid)]

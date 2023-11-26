@@ -44,8 +44,8 @@ namespace EHealth.ManageItemLists.Application.PackageHeaders.Commands.Handlers
             packageHeader.SetPackagePrice(request.PackagePrice);
             packageHeader.SetPackageRoundPrice(request.PackageRoundPrice);
             packageHeader.SetPackageSpecialtyId(request.PackageSpecialtyId);
-            packageHeader.SetPackageSubTypeId(request.PackageSubTypeId);
-            packageHeader.SetPackageTypeId(request.PackageTypeId);
+            //packageHeader.SetPackageSubTypeId(request.PackageSubTypeId);
+            //packageHeader.SetPackageTypeId(request.PackageTypeId);
             packageHeader.SetActivationDateFrom(request.ActivationDateFrom);
             packageHeader.SetActivationDateTo(request.ActivationDateTo);
             packageHeader.SetModifiedBy(_identityProvider.GetUserName());

@@ -37,7 +37,7 @@ namespace EHealth.ManageItemLists.Application.DevicesAndAssets.UHIA.Commands.Han
             _validationEngine.Validate(request);
 
             var devicesAndAssetsUHIA = await DevicesAndAssetsUHIA.Get(request.DevicesAndAssetsUHIAId, _devicesAndAssetsUHIARepository);
-
+            await DevicesAndAssetsUHIA.IsItemListBusy(_devicesAndAssetsUHIARepository, devicesAndAssetsUHIA.ItemListId);
             foreach (var item in request.ItemListPrices)
             {
                 var itemListPrice = item.ToItemListPrice(_identityProvider.GetUserName(), _identityProvider.GetTenantId());
